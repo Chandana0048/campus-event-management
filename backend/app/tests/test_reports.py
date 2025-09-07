@@ -3,14 +3,19 @@ Tests for the reports endpoints
 """
 
 import pytest
+import sys
+import os
+from datetime import datetime
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 from sqlalchemy.pool import StaticPool
 
+# Add the backend directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
 from app.main import app
 from app.db import get_session
 from app.models import Event, Student, College, Registration, Attendance, Feedback
-from app.fixtures.load_sample_data import load_sample_data
 
 
 # Create test database
@@ -51,9 +56,9 @@ def load_sample_data_for_test(session: Session):
     # Create test events
     events = [
         Event(title="Test Event 1", description="Test event 1", event_type="workshop", 
-              date="2024-01-15T10:00:00", location="Test Location 1", college_id=college.id),
+              date=datetime(2024, 1, 15, 10, 0, 0), location="Test Location 1", college_id=college.id),
         Event(title="Test Event 2", description="Test event 2", event_type="seminar", 
-              date="2024-01-20T14:00:00", location="Test Location 2", college_id=college.id),
+              date=datetime(2024, 1, 20, 14, 0, 0), location="Test Location 2", college_id=college.id),
     ]
     for event in events:
         session.add(event)

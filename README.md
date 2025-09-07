@@ -1,198 +1,132 @@
-# ⚠️ IMPORTANT: Rewrite this README in your own words before submission. This is an AI draft.
+Campus Event Management System (Webknot Assignment)
 
-# Webknot Campus Event Management System
+This project is my prototype for the Webknot assignment. The goal was to design and implement a system that makes it easier to manage campus events — from event creation and registration to attendance and feedback collection. I wanted to build something simple but functional that reflects how such a platform could work in real life.
 
-A comprehensive event management system for campus events built with FastAPI and React.
+*Problem Statement
 
-## 🚀 Quick Start
+On most campuses, handling events is still a bit messy. Students often get event information late, registrations are done manually, and tracking attendance or collecting feedback isn’t smooth.
+The problem asked me to come up with a solution that organizes these processes into one system, where:
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
+Admins/organizers can create events,
 
-### Backend Setup
+Students can view and register,
 
-1. **Navigate to backend directory:**
-   ```bash
-   cd backend
-   ```
+Attendance and feedback can be tracked,
 
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+Reports can be generated to analyze participation.
 
-3. **Load sample data:**
-   ```bash
-   python -m app.fixtures.load_sample_data
-   ```
+*My Approach
 
-4. **Start the server:**
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+I decided to split the project into backend and frontend for clarity:
 
-The API will be available at `http://localhost:8000`
+Backend (FastAPI + SQLModel): Handles data storage, APIs for events, registrations, attendance, and reports.
 
-### Frontend Setup
+Frontend (React + Tailwind): Provides a clean, responsive interface where users can interact with the system.
 
-1. **Navigate to frontend directory:**
-   ```bash
-   cd frontend
-   ```
+I used SQLite for quick development and kept PostgreSQL as an option for scaling. For the frontend, I wanted a simple yet modern look, so I went with React + Vite + Tailwind.
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+The main design decision was to make it modular: events, students, registrations, and feedback are all separate but connected tables. This keeps the system flexible for future features like authentication or notifications.
 
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+*Prototype Implementation
+Backend Setup
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 
-The frontend will be available at `http://localhost:5173`
 
-## 🧪 Running Tests
+Runs at: http://localhost:8000
 
-```bash
+Frontend Setup
+cd frontend
+npm install
+npm run dev
+
+
+Runs at: http://localhost:5173
+
+Sample Data
+
+For quick testing:
+
+python -m app.fixtures.load_sample_data
+
+*Tech Stack
+
+Backend: FastAPI, SQLModel, SQLite (with PostgreSQL option)
+
+Frontend: React, Vite, Tailwind CSS, React Router
+
+Testing: pytest (with in-memory SQLite for quick tests)
+
+Other tools: Uvicorn (backend server), npm for frontend package management
+
+*Key Features in This Prototype
+
+Event creation and listing
+
+Student registration (with duplicate prevention)
+
+Attendance marking
+
+Feedback with ratings (1–5)
+
+Reports on event popularity & top active students
+
+Simple responsive interface
+
+*Testing
+
+I added a few tests with pytest to check reports:
+
 cd backend
 pytest app/tests/test_reports.py -v
-```
 
-## 📡 API Endpoints
+*Design Overview
 
-### Events
-- `POST /events` - Create event
-- `GET /events` - List events (with filters: college_id, event_type)
-- `GET /events/{id}` - Get specific event
+Database: 6 main tables (Colleges, Students, Events, Registrations, Attendance, Feedback).
 
-### Registrations
-- `POST /events/{id}/register` - Register for event (returns 409 if already registered)
-- `POST /events/{id}/attendance` - Mark attendance
-- `POST /events/{id}/feedback` - Submit feedback (rating 1-5)
+Frontend Pages: Event listing, registration form, and admin reports.
 
-### Reports
-- `GET /reports/event-popularity` - Events sorted by registrations
-- `GET /reports/student-participation` - Students by events attended
-- `GET /reports/top-active-students?limit=N` - Top active students
+Architecture: REST API backend + React frontend with clean separation.
 
-## 📋 Example API Calls
+Styling: Tailwind CSS for quick, responsive design.
 
-### 1. Create Event
-```bash
-curl -X POST "http://localhost:8000/events" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Python Workshop",
-    "description": "Learn Python fundamentals",
-    "event_type": "workshop",
-    "date": "2024-02-15T10:00:00",
-    "location": "Computer Lab A",
-    "max_participants": 30
-  }'
-```
+*Demo Flow
 
-### 2. Register for Event
-```bash
-curl -X POST "http://localhost:8000/events/1/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "student_id": 1
-  }'
-```
+Start backend & frontend servers.
 
-### 3. Mark Attendance
-```bash
-curl -X POST "http://localhost:8000/events/1/attendance" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "student_id": 1
-  }'
-```
+Load sample data.
 
-### 4. Submit Feedback
-```bash
-curl -X POST "http://localhost:8000/events/1/feedback" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "student_id": 1,
-    "rating": 5,
-    "comment": "Excellent workshop!"
-  }'
-```
+Open the frontend at http://localhost:5173.
 
-### 5. Get Event Popularity Report
-```bash
-curl "http://localhost:8000/reports/event-popularity"
-```
+Browse events → register for one → view participation reports.
 
-### 6. Get Top Active Students
-```bash
-curl "http://localhost:8000/reports/top-active-students?limit=3"
-```
+*Known Issues / Limitations
 
-## 🎯 Demo Script
+Since this is still a prototype, there are some gaps I couldn’t fully implement yet:
 
-1. **Start both servers** (backend and frontend)
-2. **Load sample data:** `python -m app.fixtures.load_sample_data`
-3. **Visit frontend:** `http://localhost:5173`
-4. **Browse events** on the home page
-5. **Register for an event** using the registration form
-6. **View reports** in the admin reports section
+No proper login or authentication system (anyone can register right now).
 
-## 🏗️ Architecture
+Minimal error handling — the system may not respond gracefully to invalid inputs.
 
-### Backend (FastAPI + SQLModel)
-- **Models:** Event, Student, Registration, Attendance, Feedback, College
-- **Database:** SQLite (dev) / PostgreSQL (prod via DATABASE_URL)
-- **API:** RESTful endpoints with automatic OpenAPI documentation
-- **Testing:** pytest with in-memory SQLite
+Reports are basic and text-based; no visual charts yet.
 
-### Frontend (React + Vite + Tailwind)
-- **Pages:** Events List, Registration, Admin Reports
-- **Components:** Event Cards, Forms, Data Tables
-- **Styling:** Tailwind CSS with responsive design
-- **Navigation:** React Router for SPA routing
+Notifications (emails/SMS) for event updates are not implemented.
 
-## 📊 Features
+Frontend design is functional but could be more polished.
 
-- ✅ Event creation and management
-- ✅ Student registration with duplicate prevention
-- ✅ Attendance tracking
-- ✅ Feedback system (1-5 star ratings)
-- ✅ Event popularity analytics
-- ✅ Student participation reports
-- ✅ Top active students ranking
-- ✅ Responsive web interface
-- ✅ API documentation (FastAPI auto-generated)
-- ✅ Comprehensive test coverage
+*Reflection & Next Steps
 
-## 🔧 Configuration
+This prototype covers the core requirements, but if I had more time, I’d add:
 
-### Environment Variables
-- `DATABASE_URL`: PostgreSQL connection string (defaults to SQLite)
-- Backend runs on port 8000
-- Frontend runs on port 5173
+Authentication for admins and students.
 
-### Database Schema
-The system uses 6 main tables:
-- **Colleges:** University/college information
-- **Students:** Student profiles with college association
-- **Events:** Event details with college association
-- **Registrations:** Student event registrations
-- **Attendance:** Event attendance tracking
-- **Feedback:** Event ratings and comments
+Email/SMS notifications for events.
 
-## 🚀 Production Deployment
+More advanced analytics and charts.
 
-For production deployment:
-1. Set `DATABASE_URL` environment variable to PostgreSQL
-2. Run `npm run build` in frontend directory
-3. Serve frontend build files with a web server
-4. Use a production ASGI server like Gunicorn for backend
+Better error handling and validation.
 
----
+Still, I feel this version demonstrates the main idea clearly and shows how campus events can be digitized and managed effectively.
 
-**Note:** This is a prototype built for demonstration purposes. For production use, additional features like authentication, authorization, data validation, and error handling would be needed.
+This is my completed prototype for the Webknot assignment, built step by step with focus on both functionality and design clarity.
